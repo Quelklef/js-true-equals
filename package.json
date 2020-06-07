@@ -1,0 +1,30 @@
+{
+  "name": "true-equals",
+  "version": "0.1.0",
+  "description": "A deep equality algorithm aware of prototypes, getters/setters, etc.",
+  "main": "equals.js",
+  "scripts": {
+    "test": "sh ./test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quelklef/js-true-equls.git"
+  },
+  "keywords": [
+    "deep",
+    "equals",
+    "equality",
+    "recursive",
+    "prototype",
+    "getter",
+    "setter"
+  ],
+  "author": "Quelklef",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Quelklef/js-true-equals/issues"
+  },
+  "homepage": "https://github.com/Quelklef/js-true-equals#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}
