@@ -4,7 +4,7 @@
   "description": "A deep equality algorithm aware of prototypes, getters/setters, etc.",
   "main": "equals.js",
   "scripts": {
-    "test": "sh ./test.sh"
+    "test": "npx mocha tests.js --diff false --reporter dot"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
     "url": "https://github.com/Quelklef/js-true-equals/issues"
   },
   "homepage": "https://github.com/Quelklef/js-true-equals#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^7.2.0"
+  },
   "dependencies": {}
 }
