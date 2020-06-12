@@ -20,6 +20,11 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
 
   const keys = thing_keys;
 
+  // TODO: js-true-clone got a performance boost by using
+  //       Object.getOwnPropertyDescriptor (no 's') instead within the loop.
+  //       Do the same here.
+  //       It's not a certain gain since there's no benchmark, but I think
+  //       it's a likely gain.
   const thing_property_descriptors = Object.getOwnPropertyDescriptors(thing);
   const rival_property_descriptors = Object.getOwnPropertyDescriptors(rival);
 
@@ -30,6 +35,8 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
 
     const thing_property_descriptor = thing_property_descriptors[key];
     const rival_property_descriptor = rival_property_descriptors[key];
+
+    // TODO: account for undefined descriptors
 
     if (
          thing_property_descriptor.configurable !== rival_property_descriptor.configurable
@@ -58,7 +65,7 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
 // This may be overkill, but it will probably most needed cases
 const testers = new Map();
 
-// == BUILTIN CLONERS == //
+// == BUILTIN TESTERS == //
 
 testers.set(Array.prototype, function(thing, rival, equals) {
   return props_eq(thing, rival, equals);

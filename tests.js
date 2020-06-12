@@ -467,6 +467,137 @@ describe('plain and custom objects', () => {
 
 });
 
+describe('with proxies', () => {
+
+  /*
+
+  Proxy trap list, as of [2020-06-12]
+
+  handler
+    .apply()                    [function call]
+    .construct()                [new operator]
+    .defineProperty()           [Object.defineProperty]
+    .deleteProperty()           [delete operator]
+    .get()                      [getting property values]
+    .getOwnPropertyDescriptor() [Object.getOwnPropertyDescriptor]
+    .getPrototypeOf()           [Object.getPrototypeOf]
+    .has()                      [the in operator]
+    .isExtensible()             [Object.isExtensible]
+    .ownKeys()                  [Object.getOwnPropertyNames/Symbols]
+    .preventExtensions()        [Object.preventExtensions]
+    .set()                      [setting property values]
+    .setPrototypeOf()           [Object.setPrototypeOf]
+
+  */
+
+  it('ignores apply, construct, defineProperty, deleteProperty, has, isExtensible, preventExtensions, set, setPrototypeOf', () => {
+    
+    const base = { a: 1, b: 2 };
+
+    const do_err = (trap_name) => () => { throw Error(`should not call trap ${trap_name}`); };
+    const proxy = new Proxy(base, {
+      apply: do_err('apply'),
+      construct: do_err('construct'),
+      defineProperty: do_err('defineProperty'),
+      deleteProperty: do_err('deleteProperty'),
+      has: do_err('has'),
+      isExtensible: do_err('isExtensible'),
+      preventExtensions: do_err('preventExtensions'),
+      set: do_err('set'),
+      setPrototypeOf: do_err('setPrototypeOf'),
+    });
+
+    // not testing result, just that those traps aren't called
+    equals(proxy, proxy);
+    
+  });
+
+  it('interfaces with ownKeys', () => {
+
+    const base = { a: 1, b: 2 };
+
+    const proxy = new Proxy(base, {
+      ownKeys(target) {
+        return ['a'];
+      },
+    });
+
+    assert.ok(equals(proxy, { a: 1 }));
+    
+  });
+
+  it('interfaces with getOwnPropertyDescriptor', () => {
+
+    const base = { a: 1 };
+    
+    const other = { };
+    Object.defineProperty(base, 'a', {
+      enumerable: false,
+      value: 1,
+    });
+
+    assert.ok(!equals(base, other));
+
+    const proxy = new Proxy(base, {
+      getOwnPropertyDescriptor(target, prop) {
+        return {
+          value: 1,
+          writable: true,
+          enumerable: false,
+          configurable: true,
+        };
+      }
+    });
+
+    assert.ok(equals(base, proxy));
+    
+  });
+
+  it('interfaces with get(customEquals)', () => {
+
+    const obj = {
+      [custom_equals]() {
+        return false;
+      }
+    };
+
+    // TODO: globally remove .ok
+    assert.ok(!equals(obj, obj));
+
+    const proxy = new Proxy(obj, {
+      get(target, prop) {
+        if (prop !== custom_equals)
+          throw Error('should only get() with customEquasl');
+        return () => true;
+      }
+    });
+
+    assert.ok(equals(proxy, proxy));
+    
+  });
+
+  it('interfaces with getPrototypeOf', () => {
+
+    const A = {};
+    const a = Object.create(A);
+    
+    const B = {};
+    const b = Object.create(B);
+
+    assert.ok(!equals(a, b));
+
+    const p = new Proxy(b, {
+      getPrototypeOf(target) {
+        return A;
+      }
+    });
+
+    assert.ok(equals(a, p));
+    
+  });
+ 
+});
+
 it('allows for custom equals', () => {
 
   const obj_a = {

@@ -28,23 +28,35 @@ The equality algorithm is pretty smart and is aware of:
 
 Additionally, custom eqaulity algorithms are supported if needed; see the *Custom equality algorithms* section.
 
-Possibly surprising rules:
-- `equals(NaN, NaN) === true`
-- `equals(+0, -0) === true`
-
 ## Versioning
 
 The *official* API for this package is to provide an equality algorithm with perfect behaviour.
 All imperfect behaviour, even if documented, is *not* a part of the API and should *not* be relied on.
 Updates to this package will thus almost always be either minor- or patch-level updates.
 
+## Behaviour Details
+
+Mostly, `true-equals` acts how one would expect. However,
+
+- `equals(NaN, NaN) === true`
+- `equals(+0, -0) === true`
+
+<details>
+<summary> for `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`</summary>
+
+- `getPrototypeOf`: objects are considered unequal if they have different prototypes
+- `ownKeys`: objects are considered unequal if they have different ownKeys (ignoring order)
+- `getOwnPropertyDescriptor`: objects are considered unequal if their descriptors differ for any property
+  - The behaviour of `getOwnPropertyDescriptor` on keys not in `ownKeys` is ignored
+- `get`: `get` will only be called with the `customEquals` symbol, in order to do custom equality
+
+</details>
+
 ## Caveats
 
 Where *caveat* means incorrect behaviour due to JS limitations.
 
 - **`Function`, `Promise`, `WeakSet`, `WeakMap`**: Object of these types will be compared via identity (`===`)
-
-- **`Proxy`**: TODO: investigate
 
 ## Custom equality algorithms
 
