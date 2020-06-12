@@ -44,17 +44,12 @@ Perhaps-significant behaviour:
 - `equals(+0, -0) === true`
 - Prototypes are compared by identity, not structure
   - `equals(Object.create({}), Object.create({})) === false`
-
-<details>
-<summary>For `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`</summary>
-
-- `getPrototypeOf`: objects are considered unequal if they have different prototypes
-- `ownKeys`: objects are considered unequal if they have different ownKeys (ignoring order)
-- `getOwnPropertyDescriptor`: objects are considered unequal if their descriptors differ for any property
-  - The behaviour of `getOwnPropertyDescriptor` on keys not in `ownKeys` is ignored
-- `get`: `get` will only be called with the `customEquals` symbol, in order to do custom equality
-
-</details>
+- For `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`
+  - `getPrototypeOf`: objects are considered unequal if they have different prototypes
+  - `ownKeys`: objects are considered unequal if they have different ownKeys (ignoring order)
+  - `getOwnPropertyDescriptor`: objects are considered unequal if their descriptors differ for any property
+    - The behaviour of `getOwnPropertyDescriptor` on keys not in `ownKeys` is ignored
+  - `get`: `get` will only be called with the `customEquals` symbol, in order to do custom equality
 
 ## Caveats
 
