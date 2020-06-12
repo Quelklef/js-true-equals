@@ -66,7 +66,7 @@ console.assert(equals('we are equal', object));
 
 // give a custom equality algorithm to a type
 class Type {
-  [customClone](other) {
+  [customEquals](other) {
     return 'prototypes too!!';
   }
 }
