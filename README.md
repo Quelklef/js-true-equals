@@ -16,7 +16,7 @@ const { equals } = require('true-equals');
 const are_equal = equals(one_object, another_object)
 ```
 
-## Behaviour
+## Overview
 
 The equality algorithm is pretty smart and is aware of:
 - Native JS types! This includes primitives, `Array`, `Set`, `Map`, boxed primitives, typed arrays, etc.
@@ -34,15 +34,19 @@ The *official* API for this package is to provide an equality algorithm with per
 All imperfect behaviour, even if documented, is *not* a part of the API and should *not* be relied on.
 Updates to this package will thus almost always be either minor- or patch-level updates.
 
-## Behaviour Details
+## Behaviour details
 
-Mostly, `true-equals` acts how one would expect. However,
+Mostly, `true-equals` acts how one would expect.
+
+Perhaps-significant behaviour:
 
 - `equals(NaN, NaN) === true`
 - `equals(+0, -0) === true`
+- Prototypes are compared by identity, not structure
+  - `equals(Object.create({}), Object.create({})) === false`
 
 <details>
-<summary> for `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`</summary>
+<summary>For `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`</summary>
 
 - `getPrototypeOf`: objects are considered unequal if they have different prototypes
 - `ownKeys`: objects are considered unequal if they have different ownKeys (ignoring order)
