@@ -8,6 +8,36 @@ function primitive(value) {
 // Do the two values have equal properties?
 function props_eq(thing, rival, equals, ignore_keys = undefined) {
 
+  /*
+
+  Thus function is essentially:
+    - if they don't have the same ownKeys, they're not equal
+    - if they have different object descriptors for any key, they're not equal
+    - if they have different property values for any key, they're not equal
+    - otherwise, they're equal
+
+  ---
+
+  This function is forced to exhibit a degree of inflexibility. In particular,
+  it will not perform a full equality check for the results of Reflect.ownKeys
+  or of Object.getOwnPropertyDescriptor; instead, it will assume that these values
+  are well-behaved. (They always are, except in the case of Proxies.)
+
+  The reason for this is that we /can't/ perform a full equality check on these
+  things. Let's consider if we did. We'd have a line like
+  
+    [*] if (!equals(Reflect.ownKeys(thing), Reflect.ownKeys(rival)) return false;
+
+  that equals call would call props_eq on the keys arrays, which would
+  reach [*], which would call props_eq on the keys arrays, which would
+  reach [*], which would call props_eq on the keys arrays, which would
+  reach [*], which would call props_eq on the keys arrays, which would ...
+  
+  If we tried to do full equality on the keys or descriptors, we'd loop infinitely.
+  Instead, I chose to just assume that nobody is abusing Proxies *that* badly.
+
+  */
+
   const thing_keys = Reflect.ownKeys(thing);
   const rival_keys = Reflect.ownKeys(rival);
 
