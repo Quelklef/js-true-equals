@@ -6,52 +6,52 @@ const { equals, custom_equals } = require('./equals.js');
 describe('primitives', () => {
 
   it('null', () => {
-    assert.ok(equals(null, null));
+    assert(equals(null, null));
   });
 
   it('undefined', () => {
-    assert.ok(equals(undefined, undefined));
+    assert(equals(undefined, undefined));
   });
 
   it('number', () => {
-    assert.ok(equals(1, 1));
-    assert.ok(equals(-1, -1));
-    assert.ok(equals(3.75, 3.75));
-    assert.ok(equals(Number.INFINITY, Number.INFINITY));
-    assert.ok(equals(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY));
-    assert.ok(equals(Number.NaN, Number.NaN));
-    assert.ok(equals(+0, -0));
+    assert(equals(1, 1));
+    assert(equals(-1, -1));
+    assert(equals(3.75, 3.75));
+    assert(equals(Number.INFINITY, Number.INFINITY));
+    assert(equals(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY));
+    assert(equals(Number.NaN, Number.NaN));
+    assert(equals(+0, -0));
   });
 
   it('string', () => {
-    assert.ok(equals('', ''));
-    assert.ok(equals('string', 'string'));
-    assert.ok(!equals('', 0));
-    assert.ok(!equals('0', 0));
+    assert(equals('', ''));
+    assert(equals('string', 'string'));
+    assert(!equals('', 0));
+    assert(!equals('0', 0));
   });
 
   it('boolean', () => {
-    assert.ok(equals(false, false));
-    assert.ok(equals(true, true));
+    assert(equals(false, false));
+    assert(equals(true, true));
 
-    assert.ok(!equals(true, false));
+    assert(!equals(true, false));
   });
 
   it('symbol', () => {
     const A = Symbol();
     const B = Symbol();
-    assert.ok(equals(A, A));
-    assert.ok(!equals(A, B));
+    assert(equals(A, A));
+    assert(!equals(A, B));
   });
 
   it('bigint', () => {
-    assert.ok(equals(0n, 0n));
-    assert.ok(equals(100n, 100n));
-    assert.ok(equals(-100n, -100n));
+    assert(equals(0n, 0n));
+    assert(equals(100n, 100n));
+    assert(equals(-100n, -100n));
 
-    assert.ok(!equals(0n, 1n));
-    assert.ok(!equals(0n, 0));
-    assert.ok(!equals(0n, '0'));
+    assert(!equals(0n, 1n));
+    assert(!equals(0n, 0));
+    assert(!equals(0n, '0'));
   });
 
 });
@@ -61,11 +61,11 @@ function testMonkeypatching(value_expression) {
     const make = new Function(`return ${value_expression}`);
     const thing = make();
     const rival = make();
-    assert.ok(equals(thing, rival));
+    assert(equals(thing, rival));
     const prop_name = Symbol('monkeypatched');
     thing[prop_name] = 'prop val';
-    assert.ok(thing[prop_name] === 'prop val');
-    assert.ok(!equals(thing, rival));
+    assert(thing[prop_name] === 'prop val');
+    assert(!equals(thing, rival));
   });
 }
 
@@ -73,8 +73,8 @@ describe('object types', () => {
 
   describe('Number', () => {
     it('simple', () => {
-      assert.ok(equals(new Number(3.14), new Number(3.14)));
-      assert.ok(!equals(new Number(3.14), 3.14));
+      assert(equals(new Number(3.14), new Number(3.14)));
+      assert(!equals(new Number(3.14), 3.14));
     });
 
     testMonkeypatching("new Number(3.14)");
@@ -82,8 +82,8 @@ describe('object types', () => {
 
   describe('String', () => {
     it('simple', () => {
-      assert.ok(equals(new String('string'), new String('string')));
-      assert.ok(!equals(new String('string'), 'string'));
+      assert(equals(new String('string'), new String('string')));
+      assert(!equals(new String('string'), 'string'));
     });
 
     testMonkeypatching("new String('imastring')");
@@ -91,10 +91,10 @@ describe('object types', () => {
 
   describe('Boolean', () => {
     it('simple', () => {
-      assert.ok(equals(new Boolean(true), new Boolean(true)));
-      assert.ok(equals(new Boolean(false), new Boolean(false)));
-      assert.ok(!equals(new Boolean(true), true));
-      assert.ok(!equals(new Boolean(false), false));
+      assert(equals(new Boolean(true), new Boolean(true)));
+      assert(equals(new Boolean(false), new Boolean(false)));
+      assert(!equals(new Boolean(true), true));
+      assert(!equals(new Boolean(false), false));
     });
 
     testMonkeypatching("new Boolean(true)");
@@ -102,7 +102,7 @@ describe('object types', () => {
 
   describe('Date', () => {
     it('simple', () => {
-      assert.ok(equals(new Date(0), new Date(0)));
+      assert(equals(new Date(0), new Date(0)));
     });
 
     testMonkeypatching("new Date()");
@@ -118,8 +118,8 @@ describe('object types', () => {
 
   describe('RegExp', () => {
     it('simple', () => {
-      assert.ok(equals(/x/g, /x/g));
-      assert.ok(!equals(/x/g, /x/));
+      assert(equals(/x/g, /x/g));
+      assert(!equals(/x/g, /x/));
     });
 
     testMonkeypatching("/x/");
@@ -132,17 +132,17 @@ describe('container types', () => {
   describe('Array', () => {
 
     it('empty', () => {
-      assert.ok(equals([], []));
+      assert(equals([], []));
     });
 
     it('nonempty', () => {
       const nonempty = [Number.INFINITY, 0, undefined, Symbol(), 12n];
-      assert.ok(equals([...nonempty], [...nonempty]));
+      assert(equals([...nonempty], [...nonempty]));
     });
 
     it('nested', () => {
       const nested = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-      assert.ok(equals([...nested], [...nested]));
+      assert(equals([...nested], [...nested]));
     });
 
     it('cyclic', () => {
@@ -152,7 +152,7 @@ describe('container types', () => {
         return cyclic;
       };
 
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('diamond', () => {
@@ -161,14 +161,14 @@ describe('container types', () => {
         const diamond = ['before', child, 'between', child, 'after'];
         return diamond;
       };
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('sparse', () => {
       const make_sparse = () => [1,,3,,5];
       const make_dense = () => [1, undefined, 3, undefined, 5];
-      assert.ok(equals(make_sparse(), make_sparse()));
-      assert.ok(!equals(make_sparse(), make_dense()));
+      assert(equals(make_sparse(), make_sparse()));
+      assert(!equals(make_sparse(), make_dense()));
     });
 
     testMonkeypatching("[3, 1, 4]");
@@ -178,17 +178,17 @@ describe('container types', () => {
   describe('Map', () => {
 
     it('empty', () => {
-      assert.ok(equals(new Map(), new Map()));
+      assert(equals(new Map(), new Map()));
     });
 
     it('nonempty', () => {
       const make = () => new Map([['ping', 'x'], ['y', 'pong']]);
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('nested', () => {
       const make = () => new Map([['m', new Map([['mx', 0]])]]);
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('cyclic', () => {
@@ -197,7 +197,7 @@ describe('container types', () => {
         cyclic.set('self', cyclic);
         return cyclic;
       };
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('diamond', () => {
@@ -206,7 +206,7 @@ describe('container types', () => {
         const diamond = new Map([['a', child], ['b', child]]);
         return diamond;
       };
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     testMonkeypatching("new Map([['ping', 'x'], ['y', 'pong']])");
@@ -217,12 +217,12 @@ describe('container types', () => {
 
     it('empty', () => {
       const empty = new Set([]);
-      assert.ok(equals(new Set(), new Set()));
+      assert(equals(new Set(), new Set()));
     });
 
     it('nonempty', () => {
       const make = () => new Set([1, 2, 3]);
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('nested', () => {
@@ -231,7 +231,7 @@ describe('container types', () => {
         const nested = new Set([child]);
         return nested;
       };
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     it('cyclic', () => {
@@ -240,7 +240,7 @@ describe('container types', () => {
         cyclic.add(cyclic);
         return cyclic;
       };
-      assert.ok(equals(make(), make()));
+      assert(equals(make(), make()));
     });
 
     testMonkeypatching("new Set([1, 2, 3])");
@@ -261,8 +261,8 @@ describe('typed arrays et al', () => {
 
   describe('ArrayBuffer', () => {
     it('simple', () => {
-      assert.ok(equals(new ArrayBuffer(32), new ArrayBuffer(32)));
-      assert.ok(!equals(new ArrayBuffer(32), new ArrayBuffer(64)));
+      assert(equals(new ArrayBuffer(32), new ArrayBuffer(32)));
+      assert(!equals(new ArrayBuffer(32), new ArrayBuffer(64)));
     });
 
     testMonkeypatching("new ArrayBuffer(16)");
@@ -279,10 +279,10 @@ describe('typed arrays et al', () => {
         const view = new DataView(buffer, view_offset, view_byte_length);
         return view;
       }
-      assert.ok(equals(make(32, 1, 16), make(32, 1, 16)));
-      assert.ok(!equals(make(64, 1, 16), make(32, 1, 16)));
-      assert.ok(!equals(make(32, 2, 16), make(32, 1, 16)));
-      assert.ok(!equals(make(32, 1, 12), make(32, 1, 16)));
+      assert(equals(make(32, 1, 16), make(32, 1, 16)));
+      assert(!equals(make(64, 1, 16), make(32, 1, 16)));
+      assert(!equals(make(32, 2, 16), make(32, 1, 16)));
+      assert(!equals(make(32, 1, 12), make(32, 1, 16)));
     });
 
     testMonkeypatching("new DataView(new ArrayBuffer(16))");
@@ -291,8 +291,8 @@ describe('typed arrays et al', () => {
   function testTypedArray(constructor, sample_value) {
     describe(constructor.name, () => {
       it('empty', () => {
-        assert.ok(equals(new constructor(32), new constructor(32)));
-        assert.ok(!equals(new constructor(64), new constructor(32)));
+        assert(equals(new constructor(32), new constructor(32)));
+        assert(!equals(new constructor(64), new constructor(32)));
       });
 
       it('nonempty', () => {
@@ -304,9 +304,9 @@ describe('typed arrays et al', () => {
           }
           return nonempty;
         };
-        assert.ok(equals(make(32, true), make(32, true)));
-        assert.ok(!equals(make(64, true), make(32, true)));
-        assert.ok(!equals(make(32, false), make(32, true)));
+        assert(equals(make(32, true), make(32, true)));
+        assert(!equals(make(64, true), make(32, true)));
+        assert(!equals(make(32, false), make(32, true)));
       });
 
       testMonkeypatching(
@@ -341,10 +341,10 @@ describe('typed arrays et al', () => {
 function testError(constructor) {
   describe(constructor.prototype.name, () => {
     it('simple', () => {
-      assert.ok(equals(new constructor('message', 'filename', 50), new constructor('message', 'filename', 50)));
+      assert(equals(new constructor('message', 'filename', 50), new constructor('message', 'filename', 50)));
       // equality is not aware of location of error
-      assert.ok(equals(new constructor('message', '12345678', 12), new constructor('message', 'filename', 50)));
-      assert.ok(!equals(new constructor('1234567', 'filename', 50), new constructor('message', 'filename', 50)));
+      assert(equals(new constructor('message', '12345678', 12), new constructor('message', 'filename', 50)));
+      assert(!equals(new constructor('1234567', 'filename', 50), new constructor('message', 'filename', 50)));
     });
 
     testMonkeypatching(`new ${constructor.name}('message', 'filename', 50)`);
@@ -364,17 +364,17 @@ describe('errors', () => {
 describe('plain and custom objects', () => {
 
   it('empty', () => {
-    assert.ok(equals({}, {}));
+    assert(equals({}, {}));
   });
 
   it('nonempty', () => {
     const make = () => ({ left: 'right', up: 'down', red: 'blue' });
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('nested', () => {
     const make = () => ({ child: { val: 'val!' } });
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('cyclic', () => {
@@ -383,7 +383,7 @@ describe('plain and custom objects', () => {
       cyclic.self = cyclic;
       return cyclic;
     };
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('diamond', () => {
@@ -392,13 +392,13 @@ describe('plain and custom objects', () => {
       const diamond = { left: child, right: child };
       return diamond;
     }
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('with non-string keys', () => {
     const key = Symbol();
     const make = () => ({ [key]: 'val' });
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('function prototype instances with no hierarchy', () => {
@@ -407,7 +407,7 @@ describe('plain and custom objects', () => {
       this.right = right;
     }
     const make = () => new Pair(3, 4);
-    assert.ok(equals(make(), make()));
+    assert(equals(make(), make()));
   });
 
   it('ES6 class instances with no hierarchy', () => {
@@ -418,7 +418,7 @@ describe('plain and custom objects', () => {
       }
     }
     const pair = new Pair(3, 4);
-    assert.ok(equals(new Pair(3, 4), new Pair(3, 4)));
+    assert(equals(new Pair(3, 4), new Pair(3, 4)));
   });
 
   it('with prototype from Object.create', () => {
@@ -444,10 +444,10 @@ describe('plain and custom objects', () => {
     const obj_e = Object.create({ ...proto, delimiter: ' & ' });
     obj_e.items = [1, 2, 3];
 
-    assert.ok(equals(obj_a, obj_b));
-    assert.ok(!equals(obj_b, obj_c));
-    assert.ok(!equals(obj_a, obj_d));
-    assert.ok(!equals(obj_d, obj_e));
+    assert(equals(obj_a, obj_b));
+    assert(!equals(obj_b, obj_c));
+    assert(!equals(obj_a, obj_d));
+    assert(!equals(obj_d, obj_e));
   });
 
   it('with getters', () => {
@@ -461,8 +461,8 @@ describe('plain and custom objects', () => {
 
     const obj_c = { val: 'got', getter: 'got' };
 
-    assert.ok(equals(obj_a, obj_b));
-    assert.ok(!equals(obj_a, obj_c));
+    assert(equals(obj_a, obj_b));
+    assert(!equals(obj_a, obj_c));
   });
 
 });
@@ -522,7 +522,7 @@ describe('with proxies', () => {
       },
     });
 
-    assert.ok(equals(proxy, { a: 1 }));
+    assert(equals(proxy, { a: 1 }));
     
   });
 
@@ -536,7 +536,7 @@ describe('with proxies', () => {
       value: 1,
     });
 
-    assert.ok(!equals(base, other));
+    assert(!equals(base, other));
 
     const proxy = new Proxy(base, {
       getOwnPropertyDescriptor(target, prop) {
@@ -549,7 +549,7 @@ describe('with proxies', () => {
       }
     });
 
-    assert.ok(equals(base, proxy));
+    assert(equals(base, proxy));
     
   });
 
@@ -561,8 +561,7 @@ describe('with proxies', () => {
       }
     };
 
-    // TODO: globally remove .ok
-    assert.ok(!equals(obj, obj));
+    assert(!equals(obj, obj));
 
     const proxy = new Proxy(obj, {
       get(target, prop) {
@@ -572,7 +571,7 @@ describe('with proxies', () => {
       }
     });
 
-    assert.ok(equals(proxy, proxy));
+    assert(equals(proxy, proxy));
     
   });
 
@@ -584,7 +583,7 @@ describe('with proxies', () => {
     const B = {};
     const b = Object.create(B);
 
-    assert.ok(!equals(a, b));
+    assert(!equals(a, b));
 
     const p = new Proxy(b, {
       getPrototypeOf(target) {
@@ -592,7 +591,7 @@ describe('with proxies', () => {
       }
     });
 
-    assert.ok(equals(a, p));
+    assert(equals(a, p));
     
   });
  
@@ -606,10 +605,10 @@ it('allows for custom equals', () => {
     }
   };
 
-  assert.ok(equals(obj_a, 'a'));
-  assert.ok(equals('a', obj_a));
-  assert.ok(!equals(obj_a, 'b'));
-  assert.ok(!equals('b', obj_a));
+  assert(equals(obj_a, 'a'));
+  assert(equals('a', obj_a));
+  assert(!equals(obj_a, 'b'));
+  assert(!equals('b', obj_a));
 
   class Class {
     [custom_equals](other) {
@@ -618,13 +617,13 @@ it('allows for custom equals', () => {
   }
   const obj_b = new Class();
 
-  assert.ok(equals(obj_b, 'b'));
-  assert.ok(equals('b', obj_b));
-  assert.ok(!equals(obj_b, 'a'));
-  assert.ok(!equals('a', obj_b));
+  assert(equals(obj_b, 'b'));
+  assert(equals('b', obj_b));
+  assert(!equals(obj_b, 'a'));
+  assert(!equals('a', obj_b));
 
-  assert.ok(!equals(obj_a, obj_b));
-  assert.ok(!equals(obj_b, obj_a));
+  assert(!equals(obj_a, obj_b));
+  assert(!equals(obj_b, obj_a));
 
 });
 
