@@ -13,28 +13,18 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
 
   if (thing_keys.length !== rival_keys.length)
     return false;
-
   for (const thing_key of thing_keys)
     if (!rival_keys.includes(thing_key))
       return false;
-
   const keys = thing_keys;
-
-  // TODO: js-true-clone got a performance boost by using
-  //       Object.getOwnPropertyDescriptor (no 's') instead within the loop.
-  //       Do the same here.
-  //       It's not a certain gain since there's no benchmark, but I think
-  //       it's a likely gain.
-  const thing_property_descriptors = Object.getOwnPropertyDescriptors(thing);
-  const rival_property_descriptors = Object.getOwnPropertyDescriptors(rival);
 
   for (const key of keys) {
 
     if (ignore_keys && ignore_keys.includes(key))
       continue;
 
-    const thing_property_descriptor = thing_property_descriptors[key];
-    const rival_property_descriptor = rival_property_descriptors[key];
+    const thing_property_descriptor = Object.getOwnPropertyDescriptor(thing, key);
+    const rival_property_descriptor = Object.getOwnPropertyDescriptor(rival, key);
 
     // TODO: account for undefined descriptors
 
