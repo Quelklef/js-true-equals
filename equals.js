@@ -26,10 +26,10 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
     const thing_property_descriptor = Object.getOwnPropertyDescriptor(thing, key);
     const rival_property_descriptor = Object.getOwnPropertyDescriptor(rival, key);
 
-    // TODO: account for undefined descriptors
-
     if (
-         thing_property_descriptor.configurable !== rival_property_descriptor.configurable
+         thing_property_descriptor === undefined && rival_property_descriptor !== undefined
+      || thing_property_descriptor !== undefined && rival_property_descriptor === undefined
+      || thing_property_descriptor.configurable !== rival_property_descriptor.configurable
       || thing_property_descriptor.enumerable   !== rival_property_descriptor.enumerable
       || thing_property_descriptor.writable     !== rival_property_descriptor.writable
       || thing_property_descriptor.get          !== rival_property_descriptor.get

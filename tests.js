@@ -550,6 +550,14 @@ describe('with proxies', () => {
     });
 
     assert(equals(base, proxy));
+
+    const proxyu = new Proxy(base, {
+      getOwnPropertyDescriptor(target, prop) {
+        return undefined;
+      }
+    });
+
+    assert(!equals(base, proxyu));
     
   });
 
