@@ -104,6 +104,7 @@ testers.set(Function.prototype, function(thing, rival, equals) {
   return thing === rival;
 });
 
+if (typeof Map !== 'undefined')
 testers.set(Map.prototype, function(thing, rival, equals) {
 
   if (thing.size !== rival.size)
@@ -154,6 +155,7 @@ testers.set(Object.prototype, function(thing, rival, equals) {
   return props_eq(thing, rival, equals);
 });
 
+if (typeof Promise !== 'undefined')
 testers.set(Promise.prototype, function(thing, rival, equals) {
   // Structural equality for promises is not possible
   return thing === rival;
@@ -181,6 +183,7 @@ testers.set(RegExp.prototype, function(thing, rival, equals) {
 
 });
 
+if (typeof Set !== 'undefined')
 testers.set(Set.prototype, function(thing, rival, equals) {
 
   if (thing.size !== rival.size)
@@ -210,11 +213,13 @@ testers.set(String.prototype, function(thing, rival, equals) {
   return '' + thing === '' + rival && props_eq(thing, rival, equals);
 });
 
+if (typeof WeakMap !== 'undefined')
 testers.set(WeakMap.prototype, function(thing, rival, equals) {
   // Structural equality for WeakMaps is not possible
   return thing === rival;
 });
 
+if (typeof WeakSet !== 'undefined')
 testers.set(WeakSet.prototype, function(thing, rival, equals) {
   // Structural equality for WeakSets is not possible
   return thing === rival;
@@ -239,6 +244,7 @@ function typed_array_eq(thing, rival, equals) {
 
 }
 
+if (typeof ArrayBuffer !== 'undefined')
 testers.set(ArrayBuffer.prototype, function(thing, rival, equals) {
   if (!props_eq(thing, rival, equals))
     return false;
@@ -248,11 +254,13 @@ testers.set(ArrayBuffer.prototype, function(thing, rival, equals) {
   return testers.get(Int8Array.prototype)(thing_view, rival_view, equals);
 });
 
+if (typeof SharedArrayBuffer !== 'undefined')
 testers.set(SharedArrayBuffer.prototype, function(thing, rival, equals) {
   // Structural equality for SharedArrayBuffers seems to be impossible
   return thing === rival;
 });
 
+if (typeof DataView !== 'undefined')
 testers.set(DataView.prototype, function(thing, rival, equals) {
 
   if (thing.byteOffset !== rival.byteOffset || thing.byteLength !== rival.byteLength)
@@ -268,17 +276,17 @@ testers.set(DataView.prototype, function(thing, rival, equals) {
 
 });
 
-testers.set( BigInt64Array.prototype     , typed_array_eq );
-testers.set( BigUint64Array.prototype    , typed_array_eq );
-testers.set( Float32Array.prototype      , typed_array_eq );
-testers.set( Float64Array.prototype      , typed_array_eq );
-testers.set( Int8Array.prototype         , typed_array_eq );
-testers.set( Int16Array.prototype        , typed_array_eq );
-testers.set( Int32Array.prototype        , typed_array_eq );
-testers.set( Uint8Array.prototype        , typed_array_eq );
-testers.set( Uint8ClampedArray.prototype , typed_array_eq );
-testers.set( Uint16Array.prototype       , typed_array_eq );
-testers.set( Uint32Array.prototype       , typed_array_eq );
+if (typeof BigInt64Array     !== 'undefined') testers.set( BigInt64Array.prototype     , typed_array_eq );
+if (typeof BigUint64Array    !== 'undefined') testers.set( BigUint64Array.prototype    , typed_array_eq );
+if (typeof Float32Array      !== 'undefined') testers.set( Float32Array.prototype      , typed_array_eq );
+if (typeof Float64Array      !== 'undefined') testers.set( Float64Array.prototype      , typed_array_eq );
+if (typeof Int8Array         !== 'undefined') testers.set( Int8Array.prototype         , typed_array_eq );
+if (typeof Int16Array        !== 'undefined') testers.set( Int16Array.prototype        , typed_array_eq );
+if (typeof Int32Array        !== 'undefined') testers.set( Int32Array.prototype        , typed_array_eq );
+if (typeof Uint8Array        !== 'undefined') testers.set( Uint8Array.prototype        , typed_array_eq );
+if (typeof Uint8ClampedArray !== 'undefined') testers.set( Uint8ClampedArray.prototype , typed_array_eq );
+if (typeof Uint16Array       !== 'undefined') testers.set( Uint16Array.prototype       , typed_array_eq );
+if (typeof Uint32Array       !== 'undefined') testers.set( Uint32Array.prototype       , typed_array_eq );
 
 // == ERRORS == //
 
@@ -305,7 +313,9 @@ testers.set( SyntaxError.prototype    , error_eq );
 testers.set( TypeError.prototype      , error_eq );
 testers.set( URIError.prototype       , error_eq );
 
-const custom_equals = Symbol();
+const _Symbol = typeof Symbol === 'undefined' ? class Symbol { } : Symbol;
+
+const custom_equals = _Symbol();
 module.exports.customEquals = custom_equals;
 module.exports.custom_equals = custom_equals;
 
@@ -315,8 +325,8 @@ function outer_equals(thing, rival) {
   // To hndle cyclic and other tricky structures, we'll cache what we've "already seen"
   // and compare via identity insted of structure if something's in the cache.
   // Note that we only store certiain values, like Arrays or plain object
-  const thing_seen = new WeakSet();
-  const rival_seen = new WeakSet();
+  const thing_seen = typeof WeakSet !== 'undefined' ? new WeakSet() : new Set();
+  const rival_seen = typeof WeakSet !== 'undefind' ? new WeakSet() : new Set();
 
   return equals(thing, rival);
 
