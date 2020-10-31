@@ -1,6 +1,6 @@
 {
   "name": "true-equals",
-  "version": "0.1.4",
+  "version": "1.0.0",
   "description": "A deep equality algorithm aware of prototypes, getters/setters, etc.",
   "main": "equals.js",
   "scripts": {
