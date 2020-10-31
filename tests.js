@@ -1,7 +1,7 @@
 
 const assert = require('assert');
 
-const { equals, custom_equals } = require('./equals.js');
+const { equals } = require('./equals.js');
 
 describe('primitives', () => {
 
@@ -491,7 +491,7 @@ describe('with proxies', () => {
   */
 
   it('ignores apply, construct, defineProperty, deleteProperty, has, isExtensible, preventExtensions, set, setPrototypeOf', () => {
-    
+
     const base = { a: 1, b: 2 };
 
     const do_err = (trap_name) => () => { throw Error(`should not call trap ${trap_name}`); };
@@ -509,7 +509,7 @@ describe('with proxies', () => {
 
     // not testing result, just that those traps aren't called
     equals(proxy, proxy);
-    
+
   });
 
   it('interfaces with ownKeys', () => {
@@ -523,13 +523,13 @@ describe('with proxies', () => {
     });
 
     assert(equals(proxy, { a: 1 }));
-    
+
   });
 
   it('interfaces with getOwnPropertyDescriptor', () => {
 
     const base = { a: 1 };
-    
+
     const other = { };
     Object.defineProperty(base, 'a', {
       enumerable: false,
@@ -558,36 +558,14 @@ describe('with proxies', () => {
     });
 
     assert(!equals(base, proxyu));
-    
-  });
 
-  it('interfaces with get(customEquals)', () => {
-
-    const obj = {
-      [custom_equals]() {
-        return false;
-      }
-    };
-
-    assert(!equals(obj, obj));
-
-    const proxy = new Proxy(obj, {
-      get(target, prop) {
-        if (prop !== custom_equals)
-          throw Error('should only get() with customEquasl');
-        return () => true;
-      }
-    });
-
-    assert(equals(proxy, proxy));
-    
   });
 
   it('interfaces with getPrototypeOf', () => {
 
     const A = {};
     const a = Object.create(A);
-    
+
     const B = {};
     const b = Object.create(B);
 
@@ -600,38 +578,7 @@ describe('with proxies', () => {
     });
 
     assert(equals(a, p));
-    
+
   });
- 
-});
-
-it('allows for custom equals', () => {
-
-  const obj_a = {
-    [custom_equals](other) {
-      return other === 'a';
-    }
-  };
-
-  assert(equals(obj_a, 'a'));
-  assert(equals('a', obj_a));
-  assert(!equals(obj_a, 'b'));
-  assert(!equals('b', obj_a));
-
-  class Class {
-    [custom_equals](other) {
-      return other === 'b';
-    }
-  }
-  const obj_b = new Class();
-
-  assert(equals(obj_b, 'b'));
-  assert(equals('b', obj_b));
-  assert(!equals(obj_b, 'a'));
-  assert(!equals('a', obj_b));
-
-  assert(!equals(obj_a, obj_b));
-  assert(!equals(obj_b, obj_a));
 
 });
-

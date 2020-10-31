@@ -25,14 +25,14 @@ function props_eq(thing, rival, equals, ignore_keys = undefined) {
 
   The reason for this is that we /can't/ perform a full equality check on these
   things. Let's consider if we did. We'd have a line like
-  
+
     [*] if (!equals(Reflect.ownKeys(thing), Reflect.ownKeys(rival)) return false;
 
   that equals call would call props_eq on the keys arrays, which would
   reach [*], which would call props_eq on the keys arrays, which would
   reach [*], which would call props_eq on the keys arrays, which would
   reach [*], which would call props_eq on the keys arrays, which would ...
-  
+
   If we tried to do full equality on the keys or descriptors, we'd loop infinitely.
   Instead, I chose to just assume that nobody is abusing Proxies *that* badly.
 
@@ -315,10 +315,6 @@ testers.set( URIError.prototype       , error_eq );
 
 const _Symbol = typeof Symbol === 'undefined' ? class Symbol { } : Symbol;
 
-const custom_equals = _Symbol();
-module.exports.customEquals = custom_equals;
-module.exports.custom_equals = custom_equals;
-
 module.exports.equals =
 function outer_equals(thing, rival) {
 
@@ -335,12 +331,6 @@ function outer_equals(thing, rival) {
 
     if (Number.isNaN(thing) && Number.isNaN(rival))
       return true;
-
-    // Allow for custom equality
-    if (typeof thing === 'object' && thing !== null && thing[custom_equals])
-      return thing[custom_equals].call(thing, rival);
-    if (typeof rival === 'object' && rival !== null && rival[custom_equals])
-      return rival[custom_equals].call(rival, thing);
 
     if (primitive(thing) || primitive(rival))
       return thing === rival;
