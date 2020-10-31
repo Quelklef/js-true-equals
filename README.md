@@ -13,7 +13,7 @@ then
 ```js
 const { equals } = require('true-equals');
 // later ...
-const are_equal = equals(one_object, another_object)
+const areTrulyEqual = equals(oneObject, anotherObject)
 ```
 
 ## Overview
@@ -26,24 +26,17 @@ The equality algorithm is pretty smart and is aware of:
 - (Non-)enumerability, (non-)configurability, and/or (non-)writability of object properties! These will be respected.
 - etc.
 
-## Behaviour details
+## Details
 
-Mostly, `true-equals` acts how one would expect.
-
-Perhaps-significant behaviour:
-
+- Basically works how you would expect
+- However, the following may be of note:
 - `equals(NaN, NaN) === true`
 - `equals(+0, -0) === true`
 - Prototypes are compared by identity, not structure
   - `equals(Object.create({}), Object.create({})) === false`
-- For `Proxy` objects, all traps are ignored besides `getPrototypeOf`, `ownKeys`, `getOwnPropertyDescriptor`, and `get`
+- For `Proxy` objects, all traps are ignored besides the following:
   - `getPrototypeOf`: objects are considered unequal if they have different prototypes
   - `ownKeys`: objects are considered unequal if they have different ownKeys (ignoring order)
   - `getOwnPropertyDescriptor`: objects are considered unequal if their descriptors differ for any property
-    - The behaviour of `getOwnPropertyDescriptor` on keys not in `ownKeys` is ignored
-
-## Caveats
-
-Where *caveat* means incorrect behaviour due to JS limitations.
-
-- **`Function`, `Promise`, `WeakSet`, `WeakMap`**: Object of these types will be compared via identity (`===`)
+    - The result of `getOwnPropertyDescriptor` on keys not in `ownKeys` is ignored
+- Objects of type **`Function`, `Promise`, `WeakSet`,** or **`WeakMap`** will be compared via identity (`===`) due to JS limitations
